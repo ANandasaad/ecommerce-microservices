@@ -7,7 +7,7 @@ export const AuthController: {
   async signUp(req, res, next) {
     try {
       const { email, password } = req.body;
-      const response = await AuthRepositories.SignUp(email, password);
+      const response = await AuthRepositories.SignUp(req, email, password);
       res.send({
         success: true,
         message: "User signed up successfully",
