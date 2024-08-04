@@ -2,6 +2,7 @@ import { BadRequest } from "http-errors";
 import Auth from "../models/authModels";
 import { BadRequestError } from "../errors/bad-request-errors";
 import jwt from "jsonwebtoken";
+import { Password } from "../service/password";
 
 export interface SignUpRequest extends Request {
   session: {
@@ -35,6 +36,43 @@ export const AuthRepositories = {
         return resolve(createUser);
       } catch (error) {
         reject(error);
+      }
+    });
+  },
+  async SignIn(request: any, email: string, password: string) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const existUser = await Auth.findOne({ email });
+
+        if (!existUser) throw new BadRequestError("Invalid Credentials");
+        const passwordMatch = await Password.compare(
+          existUser.password,
+          password
+        );
+        if (!passwordMatch) throw new BadRequestError("Invalid Credentials");
+        const jwtToken = jwt.sign(
+          {
+            id: existUser.id,
+            email: existUser.email,
+          },
+          process.env.JWT_KEY!
+        );
+
+        request.session = {
+          jwt: jwtToken,
+        };
+        return resolve(existUser);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
+  async currentUser(request: any) {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve({ currentUser: request.currentUser });
+      } catch (error) {
+        reject({ currentUser: null });
       }
     });
   },
