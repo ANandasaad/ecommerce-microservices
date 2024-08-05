@@ -11,6 +11,7 @@ export const AuthValidator = {
       .bail(),
     body("password")
       .trim()
+      .isLength({ min: 4, max: 20 })
       .notEmpty()
       .withMessage("Please enter your password")
       .isString()
