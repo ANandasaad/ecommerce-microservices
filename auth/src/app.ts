@@ -2,8 +2,8 @@ import express from "express";
 import "express-async-errors";
 
 import authRoutes from "./routers/auth";
-import { errorHandler } from "./middleware/error-handlers";
-import { NotFoundError } from "./errors/not-found-errors";
+import { errorHandler } from "@akticketorg/commondir";
+import { NotFoundError } from "@akticketorg/commondir";
 import cookieSession from "cookie-session";
 const app = express();
 app.set("trust proxy", true);

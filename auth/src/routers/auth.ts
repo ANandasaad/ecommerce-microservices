@@ -1,13 +1,12 @@
 import express from "express";
 import { AuthValidator } from "../validators/auth-validator";
-import { validate } from "../middleware/validation.middleware";
+import { validate, currentUser } from "@akticketorg/commondir";
 import { AuthController } from "../controllers/authController";
-import { currentUser } from "../middleware/current-user.middleware";
-import { requiredAuth } from "../middleware/require-auth.middleware";
+
 const router = express.Router();
 router.get(
   "/current-user",
-  requiredAuth,
+
   currentUser,
   AuthController.CurrentUser
 );

@@ -1,6 +1,6 @@
 import { BadRequest } from "http-errors";
 import Auth from "../models/authModels";
-import { BadRequestError } from "../errors/bad-request-errors";
+import { BadRequestError } from "@akticketorg/commondir";
 import jwt from "jsonwebtoken";
 import { Password } from "../service/password";
 
