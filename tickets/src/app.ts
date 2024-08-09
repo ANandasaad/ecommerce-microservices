@@ -1,7 +1,7 @@
 import express from "express";
 import "express-async-errors";
 import ticketRoutes from "./routes/ticket-routes";
-import { errorHandler } from "@akticketorg/commondir";
+import { currentUser, errorHandler } from "@akticketorg/commondir";
 import { NotFoundError } from "@akticketorg/commondir";
 import cookieSession from "cookie-session";
 const app = express();
@@ -13,9 +13,10 @@ app.use(
     signed: false,
   })
 );
+app.use(currentUser);
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/users", ticketRoutes);
+app.use("/api/tickets", ticketRoutes);
 app.all("*", async (req, res) => {
   throw new NotFoundError();
 });
