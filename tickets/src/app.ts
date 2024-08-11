@@ -16,7 +16,7 @@ app.use(
 app.use(currentUser);
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/tickets", ticketRoutes);
+app.use("/api/ticket", ticketRoutes);
 app.all("*", async (req, res) => {
   throw new NotFoundError();
 });
