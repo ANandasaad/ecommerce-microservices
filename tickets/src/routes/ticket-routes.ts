@@ -1,4 +1,4 @@
-import { requiredAuth, validate } from "@akticketorg/commondir";
+import { currentUser, requiredAuth, validate } from "@akticketorg/commondir";
 import express from "express";
 import { TicketValidator } from "../validators/ticket.validator";
 import { TicketController } from "../controllers/ticketController";
@@ -17,6 +17,13 @@ router.get(
   "/get-ticket/:ticketId",
   requiredAuth,
   TicketController.getTicketById
+);
+router.patch(
+  "/update-ticket/:ticketId",
+  requiredAuth,
+  TicketValidator.updateTickets,
+  validate,
+  TicketController.updateTicket
 );
 
 export default router;

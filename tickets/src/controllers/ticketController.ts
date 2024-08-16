@@ -11,9 +11,11 @@ export const TicketController: {
   async createTicket(req, res, next) {
     try {
       const { Title, Price } = req.body;
+
       const userId = req.currentUser!.id;
+
       const response = await TicketRepo.createTicket(Title, Price, userId);
-      res.json({
+      return res.json({
         success: true,
         message: "Ticket created successfully",
         data: response,
@@ -55,6 +57,23 @@ export const TicketController: {
   },
   async updateTicket(req, res, next) {
     try {
-    } catch (error) {}
+      const { ticketId } = req.params;
+      const userId = req.currentUser!.id;
+      const { title, price } = req.body;
+      const response = await TicketRepo.updateTicket(
+        ticketId,
+        userId,
+        title,
+        price
+      );
+      res.json({
+        success: true,
+        message: "updated ticket successfully",
+        data: response,
+      });
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
   },
 };
