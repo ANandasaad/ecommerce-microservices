@@ -25,3 +25,21 @@ build:
         manual:
           - src: "**/*.js"
             dest: .
+
+    - image: e-com/tickets
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
+
+    - image: e-com/orders
+      context: orders
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
