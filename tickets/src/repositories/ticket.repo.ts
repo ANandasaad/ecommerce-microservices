@@ -16,6 +16,7 @@ export const TicketRepo = {
           title: createdTicket.title,
           price: createdTicket.price,
           userId: createdTicket.userId,
+          version: createdTicket.version,
         });
         return resolve(createdTicket);
       } catch (error) {
@@ -58,25 +59,22 @@ export const TicketRepo = {
     return new Promise(async (resolve, reject) => {
       try {
         const isTicket = await Ticket.findById(ticketId);
+        console.log(isTicket);
         if (!isTicket) throw new NotFoundError();
         if (isTicket.userId !== userId) throw new NotAuthorized();
-        const updatedTicket = await Ticket.findByIdAndUpdate(
-          ticketId,
-          {
-            title,
-            price,
-          },
-          { new: true }
-        );
+        isTicket.set({ title: title, price: price });
+
+        await isTicket.save();
 
         new TicketUpdatedPublisher(natsWrapper.client).publish({
-          id: updatedTicket.id,
-          title: updatedTicket.title,
-          price: updatedTicket.price,
-          userId: updatedTicket.userId,
+          id: isTicket.id,
+          title: isTicket.title,
+          price: isTicket.price,
+          userId: isTicket.userId,
+          version: isTicket.version,
         });
 
-        return resolve(updatedTicket);
+        return resolve(isTicket);
       } catch (error) {
         reject(error);
       }

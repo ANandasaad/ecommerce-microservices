@@ -6,6 +6,9 @@ import {
 } from "@akticketorg/commondir";
 import Ticket from "../models/ticket.model";
 import Order from "../models/order.model";
+import { natsWrapper } from "../nats-wrapper";
+import { OrderCreatedPublisher } from "../events/publisher/order-created-publisher";
+import { OrderCancelledPublisher } from "../events/publisher/order-cancelled-publisher";
 const EXPIRE_TIME = 15 * 60;
 export const OrderRepository = {
   async createOrder(ticketId: string, userId: string) {
@@ -31,6 +34,18 @@ export const OrderRepository = {
         });
 
         await order.save();
+
+        new OrderCreatedPublisher(natsWrapper.client).publish({
+          id: order.id,
+          status: order.status,
+          userId: order.userId,
+          expiresAt: order.expiresAt.toISOString(),
+          version: order.version,
+          ticket: {
+            id: ticket.id,
+            price: ticket.price,
+          },
+        });
         return resolve(order);
       } catch (error) {
         reject(error);
@@ -52,7 +67,7 @@ export const OrderRepository = {
   async updateOrder(orderId: string, userId: string, status: string) {
     return new Promise(async (resolve, reject) => {
       try {
-        const order = await Order.findById(orderId);
+        const order = await Order.findById(orderId).populate("ticket");
         if (!order) throw new NotFoundError();
 
         const update = await Order.findByIdAndUpdate(
@@ -60,6 +75,15 @@ export const OrderRepository = {
           { status: status },
           { new: true }
         );
+
+        new OrderCancelledPublisher(natsWrapper.client).publish({
+          id: order.id,
+          version: order.version,
+          ticket: {
+            id: order.ticket.id,
+            price: order.ticket.price,
+          },
+        });
         return resolve(update);
       } catch (error) {
         reject(error);

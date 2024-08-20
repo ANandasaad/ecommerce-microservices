@@ -96,6 +96,8 @@ export const OrderController: {
         message: "Order deleted successfully",
         data: response,
       });
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   },
 };
