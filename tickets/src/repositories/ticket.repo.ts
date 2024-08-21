@@ -1,4 +1,8 @@
-import { NotAuthorized, NotFoundError } from "@akticketorg/commondir";
+import {
+  BadRequestError,
+  NotAuthorized,
+  NotFoundError,
+} from "@akticketorg/commondir";
 import Ticket from "../models/ticketModel";
 import { TicketCreatedPublisher } from "../events/publishers/ticket-created-publisher";
 import { natsWrapper } from "../nats-wrapper";
@@ -59,9 +63,13 @@ export const TicketRepo = {
     return new Promise(async (resolve, reject) => {
       try {
         const isTicket = await Ticket.findById(ticketId);
-        console.log(isTicket);
+
         if (!isTicket) throw new NotFoundError();
+
+        if (isTicket.orderId)
+          throw new BadRequestError("cannot edit reserved ticket");
         if (isTicket.userId !== userId) throw new NotAuthorized();
+
         isTicket.set({ title: title, price: price });
 
         await isTicket.save();

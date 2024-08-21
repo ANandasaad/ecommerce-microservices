@@ -15,14 +15,24 @@ export const OrderRepository = {
     return new Promise(async (resolve, reject) => {
       try {
         const ticket = await Ticket.findById(ticketId);
-        console.log(ticket);
 
         if (!ticket) throw new NotFoundError();
 
-        const isReserved = await Ticket.isReserved();
+        // const isReserved = await Ticket.isReserved();
 
-        if (isReserved) throw new BadRequestError("Order already exists");
+        // if (isReserved) throw new BadRequestError("Order already exists");
+        const existingOrder = await Order.findOne({
+          ticket: ticket._id,
+          status: {
+            $in: [
+              OrderStatus.Created,
+              OrderStatus.AwaitingPayment,
+              OrderStatus.Complete,
+            ],
+          },
+        });
 
+        if (existingOrder) throw new BadRequestError("Order already exists");
         const expiration = new Date();
         expiration.setSeconds(expiration.getSeconds() + EXPIRE_TIME);
 
@@ -70,11 +80,8 @@ export const OrderRepository = {
         const order = await Order.findById(orderId).populate("ticket");
         if (!order) throw new NotFoundError();
 
-        const update = await Order.findByIdAndUpdate(
-          orderId,
-          { status: status },
-          { new: true }
-        );
+        order.status = OrderStatus.Cancelled;
+        await order.save();
 
         new OrderCancelledPublisher(natsWrapper.client).publish({
           id: order.id,
@@ -84,7 +91,7 @@ export const OrderRepository = {
             price: order.ticket.price,
           },
         });
-        return resolve(update);
+        return resolve(order);
       } catch (error) {
         reject(error);
       }
