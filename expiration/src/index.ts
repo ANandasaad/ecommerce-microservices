@@ -1,6 +1,7 @@
 import { NotFound } from "http-errors";
 
 import { natsWrapper } from "./nats-wrapper";
+import { OrderCreatedListener } from "./events/listeners/order-created-listener";
 
 const start = async () => {
   if (!process.env.NATS_URL) {
@@ -28,7 +29,7 @@ const start = async () => {
 
     process.on("SIGINT", () => natsWrapper.client.close());
     process.on("SIGTERM", () => natsWrapper.client.close());
-
+    new OrderCreatedListener(natsWrapper.client).listen();
     console.log("Connected to MongoDB");
   } catch (error) {
     console.error(error);
