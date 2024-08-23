@@ -16,7 +16,7 @@ app.use(
 app.use(currentUser);
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/paymnet", paymentRoutes);
+app.use("/api/payment", paymentRoutes);
 app.all("*", async (req, res) => {
   throw new NotFoundError();
 });
