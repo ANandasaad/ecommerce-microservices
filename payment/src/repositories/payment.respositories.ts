@@ -7,6 +7,8 @@ import {
 import Order from "../models/order.model";
 import { stripe } from "../stripe";
 import Payment from "../models/payment.model";
+import { PaymentCreatedPublisher } from "../events/publishers/payment-created-publisher";
+import { natsWrapper } from "../nats-wrapper";
 
 export const PaymentRepository = {
   async createPayment(orderId: string, token: string, userId: string) {
@@ -33,7 +35,13 @@ export const PaymentRepository = {
           stripeId: charge.id,
         });
         await payment.save();
-        return resolve("payment");
+
+        new PaymentCreatedPublisher(natsWrapper.client).publish({
+          id: payment.id,
+          orderId: payment.orderId,
+          stripeId: payment.stripeId,
+        });
+        return resolve(payment.id);
       } catch (error) {
         reject(error);
       }
