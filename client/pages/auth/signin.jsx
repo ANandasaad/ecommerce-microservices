@@ -1,26 +1,27 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import useRequest from "../../hooks/use-request";
 import { useRouter } from "next/navigation";
-const signUp = () => {
+const signin = () => {
   const router = useRouter();
-  const [userData, setUserData] = useState({
+  const [signInData, setSignInData] = useState({
     email: "",
     password: "",
   });
 
   const { doRequest, errors } = useRequest({
-    url: "/api/users/signUp",
+    url: "/api/users/signIn",
     method: "post",
     body: {
-      email: userData.email,
-      password: userData.password,
+      email: signInData.email,
+      password: signInData.password,
     },
     onSuccess: () => router.push("/"),
   });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserData({
-      ...userData,
+    setSignInData({
+      ...signInData,
       [name]: value,
     });
   };
@@ -29,11 +30,12 @@ const signUp = () => {
     e.preventDefault();
     await doRequest();
   };
+
   return (
     <div className="flex justify-center items-center w-full mt-10">
       <div className="shadow-md rounded-md mx-4">
         <form className="mx-5">
-          <h1 className="">Sign Up</h1>
+          <h1 className="">Sign In</h1>
           <div className="form-group">
             <label htmlFor="email">Email:</label>
             <input
@@ -42,7 +44,7 @@ const signUp = () => {
               name="email"
               required
               className="form-control"
-              value={userData?.email}
+              value={signInData?.email}
               onChange={handleChange}
             />
           </div>
@@ -53,14 +55,14 @@ const signUp = () => {
               id="password"
               name="password"
               required
-              value={userData?.password}
+              value={signInData?.password}
               onChange={handleChange}
               className="form-control"
             />
           </div>
           {errors}
           <button className="btn btn-primary my-5" onClick={handleSubmit}>
-            Sign Up
+            Sign In
           </button>
         </form>
       </div>
@@ -68,4 +70,4 @@ const signUp = () => {
   );
 };
 
-export default signUp;
+export default signin;
