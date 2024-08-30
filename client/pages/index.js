@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 const index = () => {
   const [tickets, setTickets] = useState([]);
-  console.log(tickets);
+
   const ticketList = tickets?.map((ticket) => {
     return (
       <tr key={ticket.id}>
