@@ -31,7 +31,9 @@ export const TicketRepo = {
   async getTickets() {
     return new Promise(async (resolve, reject) => {
       try {
-        const getTicket = await Ticket.find();
+        const getTicket = await Ticket.find({
+          orderId: undefined,
+        });
         if (!getTicket.length) throw new NotFoundError();
         return resolve(getTicket);
       } catch (error) {

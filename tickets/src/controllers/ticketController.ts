@@ -10,11 +10,12 @@ export const TicketController: {
 } = {
   async createTicket(req, res, next) {
     try {
-      const { Title, Price } = req.body;
+      const { title, price } = req.body;
+      console.log(req.body);
 
       const userId = req.currentUser!.id;
 
-      const response = await TicketRepo.createTicket(Title, Price, userId);
+      const response = await TicketRepo.createTicket(title, price, userId);
       return res.json({
         success: true,
         message: "Ticket created successfully",
