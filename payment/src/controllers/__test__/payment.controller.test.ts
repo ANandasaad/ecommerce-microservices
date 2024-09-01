@@ -7,6 +7,7 @@ import { stripe } from "../../stripe";
 import Payment from "../../models/payment.model";
 
 jest.mock("../../stripe");
+
 describe("PaymentControlller", () => {
   describe("POST /api/payment/create-payment", () => {
     it("return a 204 with valid inputs", async () => {
