@@ -11,15 +11,21 @@
 8. [Ingress-Nginx Configuration](#ingress-nginx-configuration)
 9. [Testing and Debugging](#testing-and-debugging)
 10. [CI/CD Pipeline](#cicd-pipeline)
-11. [Scaling and Performance](#scaling-and-performance)
-12. [Troubleshooting](#troubleshooting)
-13. [Contributing](#contributing)
-14. [License](#license)
-15. [Acknowledgments](#acknowledgments)
-
 ## Introduction
-- Overview of the Microservices Project
-- Key Technologies Used
+- **Overview of the Microservices Project**:  
+  This project is designed to manage the booking and listing of tickets, providing a comprehensive system for users to book tickets and view their bookings. The application also integrates a payment gateway for secure transactions.
+
+- **Key Technologies Used**:  
+  The project leverages a variety of modern technologies to ensure robustness, scalability, and efficiency:
+  - **Docker**: For containerizing services, ensuring consistent environments across development, testing, and production.
+  - **TypeScript**: Provides static typing, improving code quality and maintainability.
+  - **Node.js & Express**: Used for building the backend services, ensuring high performance and flexibility.
+  - **Kubernetes**: Manages containerized applications in a clustered environment, enabling automated deployment, scaling, and management.
+  - **Bull MQ**: Implements job queues and handles background tasks efficiently.
+  - **Redis**: Used as a fast, in-memory data structure store for caching and job queue management.
+  - **Ingress-Nginx**: Facilitates load balancing and routing traffic to the appropriate services within the Kubernetes cluster.
+  - **Stripe**: Integrated for handling payment processing securely and efficiently.
+
 
 ## Project Architecture
 - Microservices Structure
