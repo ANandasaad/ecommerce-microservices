@@ -4,7 +4,7 @@ metadata:
   name: ecommerce-microservices
   description: E-commerce platform built using microservices architecture (Development)
   annotations:
-    github.com/project-slug: ANandasaad/mini-microservices
+    github.com/project-slug: ANandasaad/ecommerce-microservices
     backstage.io/techdocs-ref: dir:.        # Kubernetes plugin for dev env
 
 spec:
