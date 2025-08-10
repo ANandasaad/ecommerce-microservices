@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ecommerce-microservices
+  description: E-commerce platform built using microservices architecture (Development)
+  annotations:
+    backstage.io/techdocs-ref: dir:.        # Kubernetes plugin for dev env
+
+spec:
+  type: service
+  lifecycle: development
+  owner: team-ecommerce
