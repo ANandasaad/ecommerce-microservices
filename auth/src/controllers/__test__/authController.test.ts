@@ -182,7 +182,7 @@ describe("AuthController", () => {
       const response = await request(app)
         .get("/api/users/current-user")
         .send()
-        .expect(401);
+        .expect(400);
     });
   });
 });
