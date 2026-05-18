@@ -182,7 +182,75 @@ describe("AuthController", () => {
       const response = await request(app)
         .get("/api/users/current-user")
         .send()
-        .expect(401);
+        .expect(400);
+    });
+
+    it("returns 400 with error body when no session cookie is provided", async () => {
+      const response = await request(app)
+        .get("/api/users/current-user")
+        .send()
+        .expect(400);
+
+      expect(response.body).toHaveProperty("errors");
+      expect(response.body.errors).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            message: "invalid credentials user is not logged in",
+          }),
+        ])
+      );
+    });
+
+    it("returns 200 with current user data when authenticated via session cookie", async () => {
+      const signUpResponse = await request(app)
+        .post("/api/users/signUp")
+        .send({
+          email: "authuser@example.com",
+          password: "password",
+        })
+        .expect(200);
+
+      const cookie = signUpResponse.get("Set-Cookie");
+      expect(cookie).toBeDefined();
+
+      const response = await request(app)
+        .get("/api/users/current-user")
+        .set("Cookie", cookie!)
+        .send()
+        .expect(200);
+
+      expect(response.body).toEqual({
+        success: true,
+        message: "Current user fetched",
+        data: expect.objectContaining({
+          currentUser: expect.objectContaining({
+            email: "authuser@example.com",
+          }),
+        }),
+      });
+    });
+
+    it("returns 400 when session cookie contains a malformed JWT", async () => {
+      const malformedSession = Buffer.from(
+        JSON.stringify({ jwt: "not.a.valid.jwt.token" })
+      ).toString("base64");
+
+      const response = await request(app)
+        .get("/api/users/current-user")
+        .set("Cookie", `session=${malformedSession}`)
+        .send()
+        .expect(400);
+
+      expect(response.body).toHaveProperty("errors");
+    });
+
+    it("returns 400 (not 401) for unauthenticated access confirming error type", async () => {
+      const response = await request(app)
+        .get("/api/users/current-user")
+        .send();
+
+      expect(response.status).toBe(400);
+      expect(response.status).not.toBe(401);
     });
   });
 });
